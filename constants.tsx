@@ -1,10 +1,11 @@
 
 import NetflixImg from "./src/assets/projects/netflix.png";
 import ThreeTierImg from "./src/assets/projects/3tier.png";
-import Wanduerlust from "./src/assets/projects/Wanderlust.jpg";
+import WanderlustImg from "./src/assets/projects/wanderlust.jpg";
 import OnlineShopImg from "./src/assets/projects/onlineshop.png";
 
 import ResumePdf from "./src/resume/EmonShil_resume.pdf";
+import Wanderlust from "./src/assets/projects/wanderlust.jpg";
 
 import { Project, Skill, Experience } from './types';
 export const RESUME_URL = ResumePdf;
@@ -51,7 +52,7 @@ export const PROJECTS: Project[] = [
     title: 'Wanderlust: Kubernetes Platform',
     description: 'Successfully deployed a multi-tier travel application on a self-managed K8s cluster (kubeadm). Implemented persistent storage and multi-stage Docker builds for efficiency.',
     tags: ['kubeadm', 'Docker', 'StorageClasses', 'YAML'],
-    image: Wanduerlust,
+    image: Wanderlust,
     link: 'https://github.com/shilemon/wanderlust.git'
   },
   {
