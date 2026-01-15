@@ -383,7 +383,7 @@ const App: React.FC = () => {
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-8">
                 <a href={`mailto:${EMAIL}`} className="flex items-center gap-4 bg-white text-indigo-700 px-12 py-6 rounded-3xl font-black text-lg hover:bg-zinc-100 transition-all hover:scale-105 w-full sm:w-auto shadow-2xl tracking-tight">
-                  <Mail className="w-6 h-6" /> START PROJECT
+                  <Mail className="w-6 h-6" /> Contact Me
                 </a>
                 <a href={`tel:${PHONE}`} className="flex items-center gap-4 bg-zinc-950 text-white border border-zinc-800 px-12 py-6 rounded-3xl font-black text-lg hover:bg-zinc-900 transition-all hover:scale-105 w-full sm:w-auto tracking-tight">
                   <Phone className="w-6 h-6" /> {PHONE}
