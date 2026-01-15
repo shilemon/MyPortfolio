@@ -1,7 +1,6 @@
 
 import NetflixImg from "./src/assets/projects/netflix.png";
 import ThreeTierImg from "./src/assets/projects/3tier.png";
-import WanderlustImg from "./src/assets/projects/wanderlust.jpg";
 import OnlineShopImg from "./src/assets/projects/onlineshop.png";
 
 import ResumePdf from "./src/resume/EmonShil_resume.pdf";
