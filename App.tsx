@@ -88,7 +88,7 @@ const App: React.FC = () => {
 
             <div className="hidden sm:block">
               <span className="font-extrabold tracking-tighter text-xl block leading-none">EMON SHIL</span>
-              <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em]">DevOps Senior</span>
+              <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em]">DevOps Engineer</span>
             </div>
           </div>
           
