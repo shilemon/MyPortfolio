@@ -3,9 +3,9 @@ import NetflixImg from "./src/assets/projects/netflix.png";
 import ThreeTierImg from "./src/assets/projects/3tier.png";
 import OnlineShopImg from "./src/assets/projects/onlineshop.png";
 
-import ResumePdf from "./src/resume/EmonShil_resume.pdf";
+import ResumePdf from "./src/resume/Emon Shil.pdf";
 import Wanderlust from "./src/assets/projects/wanderlust.jpg";
-
+import SSCLLogo from "./src/assets/projects/sscl.jpg";
 import { Project, Skill, Experience } from './types';
 export const RESUME_URL = ResumePdf;
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/emon-shil-45ba97272/';
@@ -24,6 +24,15 @@ const CIKATECH_LOGO_SVG = `data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" fi
   <path d="M15 46H85" stroke="white" stroke-width="4" stroke-linecap="round"/>
   <path d="M15 54H85" stroke="white" stroke-width="4" stroke-linecap="round"/>
   <path d="M35 22V78M75 22V78" stroke="white" stroke-width="2" stroke-opacity="0.3"/>
+</svg>`;
+
+const SSCL_LOGO_SVG = `data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="18" stroke="white" stroke-width="5"/>
+  <path d="M20 50 Q30 30 50 32" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M80 50 Q70 30 50 32" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M10 58 Q30 20 50 22" stroke="white" stroke-width="3" stroke-linecap="round" fill="none" stroke-opacity="0.5"/>
+  <path d="M90 58 Q70 20 50 22" stroke="white" stroke-width="3" stroke-linecap="round" fill="none" stroke-opacity="0.5"/>
+  <circle cx="50" cy="50" r="5" fill="white"/>
 </svg>`;
 
 export const PROJECTS: Project[] = [
@@ -142,6 +151,20 @@ export const SKILLS: Skill[] = [
 ];
 
 export const EXPERIENCES: Experience[] = [
+
+    {
+    company: 'Spectrum Software & Consulting Ltd. (SSCL)',
+    role: 'DevOps Engineer Intern',
+    period: 'Apr. 2026 – Present',
+    logo: SSCLLogo,
+    description: [
+      'Set up and configured Prometheus and Grafana monitoring systems to track infrastructure health, resource utilization, and application performance metrics in real time.',
+      'Implemented and updated production-grade CI/CD pipelines using Jenkins and GitHub Actions, ensuring reliable automated build, test, and deployment workflows.',
+      'Worked extensively with Docker and Docker Compose to containerize applications and manage multi-service environments across development and production stages.',
+      'Collaborated with the engineering team on cloud-native deployments, supporting scalable and fault-tolerant application delivery for fintech products (SpectraTrade, InfraSight, DocumentAI).',
+      'Assisted in configuration management and infrastructure automation, contributing to improved system reliability and reduced manual operational overhead.'
+    ]
+  },
   {
     company: 'Cikatech Inc.',
     role: 'DevOps Engineer',

@@ -408,7 +408,7 @@ const App: React.FC = () => {
             
             <a
             href={RESUME_URL}
-            download="EmonShil_Resume.pdf"
+            download="EmonShil_resume.pdf"
             className="px-10 py-5 bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 text-white rounded-2xl font-black text-sm tracking-widest transition-all hover:-translate-y-1 flex items-center gap-3 uppercase"
             >
              Download Resume
