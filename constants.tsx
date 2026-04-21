@@ -159,7 +159,7 @@ export const EXPERIENCES: Experience[] = [
     logo: SSCLLogo,
     description: [
       'Set up and configured Prometheus and Grafana monitoring systems to track infrastructure health, resource utilization, and application performance metrics in real time.',
-      'Implemented and updated production-grade CI/CD pipelines using Jenkins and GitHub Actions, ensuring reliable automated build, test, and deployment workflows.',
+      'Implemented and updated production-grade CI/CD pipelines using GitLab, ensuring reliable automated build, test, and deployment workflows.',
       'Worked extensively with Docker and Docker Compose to containerize applications and manage multi-service environments across development and production stages.',
       'Collaborated with the engineering team on cloud-native deployments, supporting scalable and fault-tolerant application delivery for fintech products (SpectraTrade, InfraSight, DocumentAI).',
       'Assisted in configuration management and infrastructure automation, contributing to improved system reliability and reduced manual operational overhead.'
