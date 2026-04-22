@@ -128,19 +128,38 @@ const App: React.FC = () => {
              
              
 
-              <h1 className="text-7xl md:text-9xl font-black leading-[0.9] tracking-tighter">
-               <span className="block animate-word-reveal">
-               Emon
-               </span>
+<h1 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter overflow-hidden">
+  <span
+    className="block mb-2"
+    style={{
+      background: 'linear-gradient(90deg, #ffffff 0%, #a5b4fc 50%, #ffffff 100%)',
+      backgroundSize: '200% auto',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      animation: 'shimmer 3s linear infinite, wordBounce 4s cubic-bezier(0.16,1,0.3,1) infinite',
+      display: 'inline-block',
+      marginBottom: '16px',   
+    }}
+  >
+    Emon
+  </span>
+  <span
+    className="block"
+    style={{
+      background: 'linear-gradient(135deg, #6366f1 0%, #38bdf8 40%, #818cf8 70%, #6366f1 100%)',
+      backgroundSize: '300% 300%',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      animation: 'gradientShift 4s ease infinite, wordBounce2 4s cubic-bezier(0.16,1,0.3,1) infinite',
+      filter: 'drop-shadow(0 0 30px rgba(99,102,241,0.4))',
+      display: 'inline-block',
+       
 
-              <span
-               className="block animate-word-reveal text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-blue-400 to-cyan-400"
-               style={{ animationDelay: "250ms" }}
-                >
-               Shil.
-              </span>
-              </h1>
-
+    }}
+  >
+    Shil.
+  </span>
+</h1>
 
               
               <p className="text-lg md:text-xl text-zinc-400 max-w-xl leading-relaxed font-medium">
