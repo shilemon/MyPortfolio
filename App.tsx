@@ -227,26 +227,85 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
             {SKILLS.map((skill, i) => (
               <ScrollReveal key={i} direction="up" delay={i * 0.1}>
-                <div className="group p-8 md:p-10 glass-card rounded-[2.5rem] hover:bg-zinc-900/60 hover:border-indigo-500/40 transition-all duration-500 relative overflow-hidden flex flex-col items-center text-center shadow-lg">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 blur-[50px] rounded-full translate-x-10 translate-y-[-10px] group-hover:bg-indigo-500/20 transition-colors"></div>
-                  <div className="flex -space-x-4 mb-10 h-28 items-center justify-center relative z-10 w-full">
+                <div
+                  onMouseMove={(e) => {
+                    const card = e.currentTarget;
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const rotateX = ((y - rect.height / 2) / rect.height) * -20;
+                    const rotateY = ((x - rect.width / 2) / rect.width) * 20;
+                    const glowX = (x / rect.width) * 100;
+                    const glowY = (y / rect.height) * 100;
+                    card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.04)`;
+                    card.style.transition = 'transform 0.1s ease';
+                    (card.querySelector('.skill-glow') as HTMLElement).style.background =
+                      `radial-gradient(circle at ${glowX}% ${glowY}%, rgba(99,102,241,0.25) 0%, transparent 70%)`;
+                  }}
+                  onMouseLeave={(e) => {
+                    const card = e.currentTarget;
+                    card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
+                    card.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
+                    (card.querySelector('.skill-glow') as HTMLElement).style.background = 'transparent';
+                  }}
+                  className="group p-8 md:p-10 glass-card rounded-[2.5rem] hover:border-indigo-500/40 transition-colors duration-300 relative overflow-hidden flex flex-col items-center text-center shadow-lg cursor-pointer"
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  {/* Dynamic mouse-follow glow */}
+                  <div className="skill-glow absolute inset-0 rounded-[2.5rem] transition-all duration-200 pointer-events-none z-0"></div>
+
+                  {/* Animated corner accent */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-[60px] rounded-full translate-x-10 -translate-y-10 group-hover:bg-indigo-500/30 group-hover:scale-150 transition-all duration-700"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 blur-[40px] rounded-full -translate-x-6 translate-y-6 group-hover:bg-blue-500/15 group-hover:scale-125 transition-all duration-700"></div>
+
+                  {/* Scan line animation on hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden rounded-[2.5rem]">
+                    <div
+                      className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent"
+                      style={{ animation: 'scanLine 2s linear infinite' }}
+                    ></div>
+                  </div>
+
+                  {/* Category badge */}
+                  <div className="absolute top-5 left-5 px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[9px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10">
+                    {skill.category}
+                  </div>
+
+                  {/* Logo container with 3D float */}
+                  <div
+                    className="flex -space-x-4 mb-10 h-28 items-center justify-center relative z-10 w-full"
+                    style={{ transform: 'translateZ(30px)', transformStyle: 'preserve-3d' }}
+                  >
                     {skill.logos.map((logoUrl, idx) => (
                       <div
                         key={idx}
                         className={`${(idx + i) % 2 === 0 ? 'animate-float-1' : 'animate-float-2'} w-20 h-20 md:w-24 md:h-24 bg-zinc-950 rounded-2xl flex items-center justify-center p-5 backdrop-blur-3xl border border-white/5 group-hover:border-indigo-500/50 transition-all duration-700 shadow-2xl relative shrink-0 overflow-hidden`}
-                        style={{ animationDelay: `${idx * -2.5}s`, zIndex: skill.logos.length - idx }}
+                        style={{
+                          animationDelay: `${idx * -2.5}s`,
+                          zIndex: skill.logos.length - idx,
+                          boxShadow: '0 0 0 1px rgba(255,255,255,0.05)',
+                        }}
                       >
+                        {/* Logo inner glow */}
+                        <div className="absolute inset-0 bg-indigo-500/0 group-hover:bg-indigo-500/10 transition-colors duration-500 rounded-2xl"></div>
                         <img
                           src={logoUrl}
                           alt={`${skill.name} tool`}
-                          className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all group-hover:scale-110"
+                          className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_20px_rgba(99,102,241,0.6)] transition-all duration-500 group-hover:scale-115 relative z-10"
                           loading="eager"
                         />
                       </div>
                     ))}
                   </div>
-                  <h3 className="font-black text-xl md:text-2xl mb-1 group-hover:text-indigo-400 transition-colors tracking-tight">{skill.name}</h3>
-                  <p className="text-[11px] text-zinc-500 font-black uppercase tracking-[0.2em]">{skill.category}</p>
+
+                  {/* Text with 3D lift */}
+                  <div style={{ transform: 'translateZ(20px)', transformStyle: 'preserve-3d' }} className="relative z-10">
+                    <h3 className="font-black text-xl md:text-2xl mb-1 group-hover:text-indigo-400 transition-colors tracking-tight">{skill.name}</h3>
+                    <p className="text-[11px] text-zinc-500 group-hover:text-zinc-400 font-black uppercase tracking-[0.2em] transition-colors">{skill.category}</p>
+                  </div>
+
+                  {/* Bottom progress bar animation */}
+                  <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-indigo-500 via-blue-400 to-cyan-400 transition-all duration-700 rounded-full"></div>
                 </div>
               </ScrollReveal>
             ))}
