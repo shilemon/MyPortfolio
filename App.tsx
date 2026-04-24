@@ -71,22 +71,27 @@ const App: React.FC = () => {
       {/* Cursor Trail */}
       <CursorTrail />
 
-      {/* Dynamic Background Effect */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/10 blur-[150px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/5 blur-[150px] rounded-full"></div>
-        <div className="absolute inset-0 opacity-[0.03]">
-          {backgroundLogos.map((logo, i) => (
-            <img
-              key={i}
-              src={logo.url}
-              alt=""
-              className="absolute w-24 h-24 animate-drift grayscale brightness-200"
-              style={{ top: logo.top, left: logo.left, animationDelay: logo.delay }}
-            />
-          ))}
-        </div>
-      </div>
+ {/* Dynamic Background Effect — Full Page */}
+<div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+  {/* 3D Particles — whole page */}
+  <div className="absolute inset-0 opacity-50">
+    <ParticleCanvas />
+  </div>
+
+  <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/10 blur-[150px] rounded-full"></div>
+  <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/5 blur-[150px] rounded-full"></div>
+  <div className="absolute inset-0 opacity-[0.03]">
+    {backgroundLogos.map((logo, i) => (
+      <img
+        key={i}
+        src={logo.url}
+        alt=""
+        className="absolute w-24 h-24 animate-drift grayscale brightness-200"
+        style={{ top: logo.top, left: logo.left, animationDelay: logo.delay }}
+      />
+    ))}
+  </div>
+</div>
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-zinc-950/60 backdrop-blur-xl border-b border-zinc-800/50">
@@ -126,10 +131,7 @@ const App: React.FC = () => {
 
         {/* ── HERO ── */}
         <section id="home" className="min-h-[90vh] flex flex-col justify-center py-20 relative">
-          {/* 3D Particle Background */}
-          <div className="absolute inset-0 z-0 opacity-60">
-            <ParticleCanvas />
-          </div>
+         
 
           <div className="grid lg:grid-cols-2 gap-20 items-center relative z-10">
             <div className="space-y-10 animate-in slide-in-from-left duration-1000">
