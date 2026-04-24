@@ -288,13 +288,13 @@ const App: React.FC = () => {
                         )}
                       </div>
                       
-                      <div className="flex items-center gap-3 text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em]">
-                        <div className="relative flex h-2 w-2">
-                          <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500/40 opacity-75"></div>
-                          <div className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></div>
-                        </div>
-                        Active Workload
-                      </div>
+                    <div className="flex items-center gap-3 text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em]">
+                    <div className="relative flex h-2 w-2">
+                    <div className={`${i === 0 ? 'animate-ping' : ''} absolute inline-flex h-full w-full rounded-full ${i === 0 ? 'bg-indigo-500/40' : 'bg-zinc-500/40'} opacity-75`}></div>
+                    <div className={`relative inline-flex rounded-full h-2 w-2 ${i === 0 ? 'bg-indigo-500' : 'bg-zinc-500'}`}></div>
+                    </div>
+                    {i === 0 ? 'Active Workload' : 'Completed'}
+                    </div>
                     </div>
                   </div>
                   <div className="md:w-2/3 pb-16 border-l-2 border-zinc-800 pl-12 relative">
