@@ -1,4 +1,4 @@
-
+import ParticleCanvas from './src/components/ParticleCanvas';
 import React, { useState, useEffect } from 'react';
 
 import Official from "./src/assets/Official.jpeg";
@@ -50,6 +50,22 @@ const App: React.FC = () => {
     { url: 'https://www.vectorlogo.zone/logos/jenkins/jenkins-icon.svg', top: '10%', left: '50%', delay: '5s' },
 
   ];
+
+  const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+  const card = e.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const rotateX = ((y - rect.height / 2) / rect.height) * -12;
+  const rotateY = ((x - rect.width / 2) / rect.width) * 12;
+  card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+  card.style.transition = 'transform 0.1s ease';
+};
+
+const handleTiltReset = (e: React.MouseEvent<HTMLDivElement>) => {
+  e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+  e.currentTarget.style.transition = 'transform 0.5s ease';
+};
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-indigo-500/30 selection:text-indigo-200 font-sans">
@@ -363,8 +379,12 @@ const App: React.FC = () => {
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
             {PROJECTS.map((project) => (
-              <div key={project.id} className="group flex flex-col bg-zinc-900/10 rounded-[3rem] border border-zinc-800 overflow-hidden hover:border-indigo-500/30 transition-all duration-700 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
-                <div className="aspect-[16/10] overflow-hidden relative">
+<div
+  key={project.id}
+  onMouseMove={handleTilt}
+  onMouseLeave={handleTiltReset}
+  className="group flex flex-col bg-zinc-900/10 rounded-[3rem] border border-zinc-800 overflow-hidden hover:border-indigo-500/30 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+>                <div className="aspect-[16/10] overflow-hidden relative">
                   <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s] opacity-50 grayscale group-hover:grayscale-0 group-hover:opacity-70" />
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent"></div>
                   <div className="absolute bottom-8 left-8 flex flex-wrap gap-2.5">
