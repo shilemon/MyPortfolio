@@ -20,6 +20,17 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
+
+  @keyframes glitch {
+  0%  { text-shadow: 3px 0 #6366f1, -3px 0 #38bdf8; clip-path: inset(0 0 95% 0); }
+  5%  { text-shadow: -3px 0 #6366f1, 3px 0 #38bdf8; clip-path: inset(80% 0 0 0); }
+  10% { text-shadow: 3px 2px #6366f1, -3px -2px #38bdf8; clip-path: inset(50% 0 30% 0); }
+  15%, 100% { text-shadow: none; clip-path: none; }
+}
+
+.glitch-text:hover {
+  animation: glitch 0.4s steps(1) infinite;
+}
   @keyframes wordBounce {
     0%   { opacity: 0; transform: translateY(80px) skewY(5deg); }
     15%  { opacity: 1; transform: translateY(-8px) skewY(-2deg); }
