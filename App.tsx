@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ParticleCanvas from './src/components/ParticleCanvas';
 import ScrollReveal from './src/components/ScrollReveal';
 import CursorTrail from './src/components/CursorTrail';
@@ -19,14 +19,51 @@ import {
 import { PROJECTS, SKILLS, EXPERIENCES, LINKEDIN_URL, EDUCATION, EMAIL, PHONE, GITHUB_URL, RESUME_URL} from './constants';
 import ChatBot from './components/ChatBot';
 
+// ── Magnetic Button Hook ──────────────────────────────────────────────────────
+function useMagnetic(strength = 0.35) {
+  const ref = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const handleMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) * strength;
+      const dy = (e.clientY - cy) * strength;
+      el.style.transform = `translate(${dx}px, ${dy}px) scale(1.06)`;
+      el.style.transition = 'transform 0.15s ease';
+    };
+
+    const handleLeave = () => {
+      el.style.transform = 'translate(0px, 0px) scale(1)';
+      el.style.transition = 'transform 0.5s cubic-bezier(0.16,1,0.3,1)';
+    };
+
+    el.addEventListener('mousemove', handleMove);
+    el.addEventListener('mouseleave', handleLeave);
+    return () => {
+      el.removeEventListener('mousemove', handleMove);
+      el.removeEventListener('mouseleave', handleLeave);
+    };
+  }, [strength]);
+
+  return ref;
+}
+
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [eduLogoError, setEduLogoError] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const hireMeRef = useMagnetic(0.4);
 
   useEffect(() => {
     const handleScroll = () => {
       const sections = ['home', 'skills', 'projects', 'experience', 'contact'];
       const scrollPos = window.scrollY + 100;
+      setScrollY(window.scrollY);
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element && scrollPos >= element.offsetTop && scrollPos < element.offsetTop + element.offsetHeight) {
@@ -35,7 +72,7 @@ const App: React.FC = () => {
         }
       }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -71,27 +108,27 @@ const App: React.FC = () => {
       {/* Cursor Trail */}
       <CursorTrail />
 
- {/* Dynamic Background Effect — Full Page */}
-<div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-  {/* 3D Particles — whole page */}
-  <div className="absolute inset-0 opacity-50">
-    <ParticleCanvas />
-  </div>
+      {/* Dynamic Background Effect — Full Page */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* 3D Particles — whole page */}
+        <div className="absolute inset-0 opacity-50">
+          <ParticleCanvas />
+        </div>
 
-  <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/10 blur-[150px] rounded-full"></div>
-  <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/5 blur-[150px] rounded-full"></div>
-  <div className="absolute inset-0 opacity-[0.03]">
-    {backgroundLogos.map((logo, i) => (
-      <img
-        key={i}
-        src={logo.url}
-        alt=""
-        className="absolute w-24 h-24 animate-drift grayscale brightness-200"
-        style={{ top: logo.top, left: logo.left, animationDelay: logo.delay }}
-      />
-    ))}
-  </div>
-</div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/10 blur-[150px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/5 blur-[150px] rounded-full"></div>
+        <div className="absolute inset-0 opacity-[0.03]">
+          {backgroundLogos.map((logo, i) => (
+            <img
+              key={i}
+              src={logo.url}
+              alt=""
+              className="absolute w-24 h-24 animate-drift grayscale brightness-200"
+              style={{ top: logo.top, left: logo.left, animationDelay: logo.delay }}
+            />
+          ))}
+        </div>
+      </div>
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-zinc-950/60 backdrop-blur-xl border-b border-zinc-800/50">
@@ -106,18 +143,29 @@ const App: React.FC = () => {
             </div>
           </div>
 
+          {/* ── PART 1: Resume button now lives inside this flex group ── */}
           <div className="flex items-center gap-8 md:gap-12">
             {['Home', 'Skills', 'Projects', 'Experience'].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
                 className={`text-xs font-bold uppercase tracking-widest transition-all hover:text-indigo-400 ${
-                  activeSection === item.toLowerCase() ? 'text-indigo-400 scale-105 underline underline-offset-8 decoration-2' : 'text-zinc-500'
+                  activeSection === item.toLowerCase()
+                    ? 'text-indigo-400 scale-105 underline underline-offset-8 decoration-2'
+                    : 'text-zinc-500'
                 }`}
               >
                 {item}
               </a>
             ))}
+
+            <a
+              href={RESUME_URL}
+              download="EmonShil_resume.pdf"
+              className="text-xs font-black uppercase tracking-widest px-4 py-2 rounded-xl bg-indigo-600/20 border border-indigo-500/40 text-indigo-400 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-300"
+            >
+              Resume ↓
+            </a>
           </div>
 
           <div className="hidden lg:flex gap-5 items-center">
@@ -131,7 +179,15 @@ const App: React.FC = () => {
 
         {/* ── HERO ── */}
         <section id="home" className="min-h-[90vh] flex flex-col justify-center py-20 relative">
-         
+
+          {/* Parallax hero background blobs */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ transform: `translateY(${scrollY * 0.18}px)` }}
+          >
+            <div className="absolute top-20 left-0 w-96 h-96 bg-indigo-600/5 blur-[140px] rounded-full"></div>
+            <div className="absolute bottom-0 right-0 w-80 h-80 bg-blue-600/5 blur-[120px] rounded-full"></div>
+          </div>
 
           <div className="grid lg:grid-cols-2 gap-20 items-center relative z-10">
             <div className="space-y-10 animate-in slide-in-from-left duration-1000">
@@ -176,9 +232,11 @@ const App: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-5 pt-6">
+                {/* ── PART 2a: Magnetic "Hire Me" button ── */}
                 <a
+                  ref={hireMeRef}
                   href="#contact"
-                  className="px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm tracking-widest transition-all hover:shadow-[0_10px_40px_rgba(79,70,229,0.5)] hover:-translate-y-1 flex items-center gap-3 group uppercase"
+                  className="px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm tracking-widest transition-colors hover:shadow-[0_10px_40px_rgba(79,70,229,0.5)] flex items-center gap-3 group uppercase"
                 >
                   Hire Me <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
@@ -192,8 +250,11 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Profile Frame */}
-            <div className="relative group animate-in fade-in zoom-in duration-1000 delay-200">
+            {/* Profile Frame — subtle parallax */}
+            <div
+              className="relative group animate-in fade-in zoom-in duration-1000 delay-200"
+              style={{ transform: `translateY(${scrollY * -0.06}px)` }}
+            >
               <div className="absolute -inset-10 bg-indigo-500/10 rounded-full blur-[120px] opacity-30 group-hover:opacity-60 transition-opacity"></div>
               <div className="relative aspect-[4/5] w-full max-w-md mx-auto rounded-[3rem] border-2 border-zinc-800/50 bg-zinc-900/20 p-3 overflow-hidden shadow-2xl transition-all duration-700 group-hover:border-indigo-500/40 group-hover:scale-[1.01]">
                 <div className="w-full h-full rounded-[2.5rem] overflow-hidden bg-zinc-950 relative">
@@ -216,7 +277,11 @@ const App: React.FC = () => {
         </section>
 
         {/* ── SKILLS ── */}
-        <section id="skills" className="py-32 border-t border-zinc-900/50">
+        <section
+          id="skills"
+          className="py-32 border-t border-zinc-900/50"
+          style={{ transform: `translateY(${Math.max(0, scrollY - 600) * 0.04}px)` }}
+        >
           <ScrollReveal direction="up">
             <div className="text-center mb-24 space-y-6">
               <h2 className="text-5xl md:text-7xl font-black tracking-tighter glitch-text">Stack & Tools.</h2>
@@ -253,27 +318,18 @@ const App: React.FC = () => {
                   className="group p-8 md:p-10 glass-card rounded-[2.5rem] hover:border-indigo-500/40 transition-colors duration-300 relative overflow-hidden flex flex-col items-center text-center shadow-lg cursor-pointer"
                   style={{ transformStyle: 'preserve-3d' }}
                 >
-                  {/* Dynamic mouse-follow glow */}
                   <div className="skill-glow absolute inset-0 rounded-[2.5rem] transition-all duration-200 pointer-events-none z-0"></div>
-
-                  {/* Animated corner accent */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-[60px] rounded-full translate-x-10 -translate-y-10 group-hover:bg-indigo-500/30 group-hover:scale-150 transition-all duration-700"></div>
                   <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 blur-[40px] rounded-full -translate-x-6 translate-y-6 group-hover:bg-blue-500/15 group-hover:scale-125 transition-all duration-700"></div>
-
-                  {/* Scan line animation on hover */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden rounded-[2.5rem]">
                     <div
                       className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent"
                       style={{ animation: 'scanLine 2s linear infinite' }}
                     ></div>
                   </div>
-
-                  {/* Category badge */}
                   <div className="absolute top-5 left-5 px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[9px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10">
                     {skill.category}
                   </div>
-
-                  {/* Logo container with 3D float */}
                   <div
                     className="flex -space-x-4 mb-10 h-28 items-center justify-center relative z-10 w-full"
                     style={{ transform: 'translateZ(30px)', transformStyle: 'preserve-3d' }}
@@ -288,7 +344,6 @@ const App: React.FC = () => {
                           boxShadow: '0 0 0 1px rgba(255,255,255,0.05)',
                         }}
                       >
-                        {/* Logo inner glow */}
                         <div className="absolute inset-0 bg-indigo-500/0 group-hover:bg-indigo-500/10 transition-colors duration-500 rounded-2xl"></div>
                         <img
                           src={logoUrl}
@@ -299,14 +354,10 @@ const App: React.FC = () => {
                       </div>
                     ))}
                   </div>
-
-                  {/* Text with 3D lift */}
                   <div style={{ transform: 'translateZ(20px)', transformStyle: 'preserve-3d' }} className="relative z-10">
                     <h3 className="font-black text-xl md:text-2xl mb-1 group-hover:text-indigo-400 transition-colors tracking-tight">{skill.name}</h3>
                     <p className="text-[11px] text-zinc-500 group-hover:text-zinc-400 font-black uppercase tracking-[0.2em] transition-colors">{skill.category}</p>
                   </div>
-
-                  {/* Bottom progress bar animation */}
                   <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-indigo-500 via-blue-400 to-cyan-400 transition-all duration-700 rounded-full"></div>
                 </div>
               </ScrollReveal>
@@ -342,22 +393,53 @@ const App: React.FC = () => {
                         <div className="inline-block px-4 py-2 bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 font-black text-xs uppercase tracking-widest rounded-xl">
                           {exp.period}
                         </div>
-                        <div className="relative w-36 h-36 glass-card rounded-[2rem] p-8 flex items-center justify-center overflow-hidden border-zinc-800/50 group-hover:border-indigo-500/40 transition-all duration-700 group-hover:shadow-[0_0_40px_rgba(79,70,229,0.15)] group-hover:-translate-y-1">
-                          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-indigo-500/5 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                          <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity animate-pulse">
-                            <div className="absolute top-2 left-2 w-1 h-1 bg-white rounded-full"></div>
-                            <div className="absolute bottom-2 right-2 w-1 h-1 bg-white rounded-full"></div>
+
+                        {/* ── PART 2b: 3D flip card on experience logo ── */}
+                        <div
+                          className="relative w-36 h-36"
+                          style={{ perspective: '800px' }}
+                        >
+                          <div
+                            className="w-full h-full transition-transform duration-700 ease-in-out group-hover:[transform:rotateY(180deg)]"
+                            style={{ transformStyle: 'preserve-3d', position: 'relative' }}
+                          >
+                            {/* Front face */}
+                            <div
+                              className="absolute inset-0 glass-card rounded-[2rem] p-8 flex items-center justify-center overflow-hidden border-zinc-800/50 group-hover:border-indigo-500/40 transition-colors duration-300 shadow-[0_0_0px_rgba(79,70,229,0)] group-hover:shadow-[0_0_40px_rgba(79,70,229,0.15)]"
+                              style={{ backfaceVisibility: 'hidden' }}
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-indigo-500/5 opacity-50"></div>
+                              <div className="absolute inset-0 opacity-20 animate-pulse">
+                                <div className="absolute top-2 left-2 w-1 h-1 bg-white rounded-full"></div>
+                                <div className="absolute bottom-2 right-2 w-1 h-1 bg-white rounded-full"></div>
+                              </div>
+                              {exp.logo ? (
+                                <img
+                                  src={exp.logo}
+                                  alt={exp.company}
+                                  className="w-full h-full object-contain relative z-10 brightness-110 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+                                />
+                              ) : (
+                                <Server className="w-12 h-12 text-indigo-500 relative z-10" />
+                              )}
+                            </div>
+
+                            {/* Back face */}
+                            <div
+                              className="absolute inset-0 glass-card rounded-[2rem] p-5 flex flex-col items-center justify-center gap-2 bg-indigo-600/10 border border-indigo-500/40"
+                              style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                            >
+                              <div className="text-indigo-400 font-black text-[10px] uppercase tracking-[0.2em] text-center leading-loose">
+                                <div className="text-white font-black text-sm mb-1">{exp.company}</div>
+                                <div className="text-indigo-400">{exp.role}</div>
+                                <div className="mt-2 px-3 py-1 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-[9px]">
+                                  {exp.period}
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          {exp.logo ? (
-                            <img
-                              src={exp.logo}
-                              alt={exp.company}
-                              className="w-full h-full object-contain relative z-10 brightness-110 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-700"
-                            />
-                          ) : (
-                            <Server className="w-12 h-12 text-indigo-500 relative z-10" />
-                          )}
                         </div>
+
                         <div className="flex items-center gap-3 text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em]">
                           <div className="relative flex h-2 w-2">
                             <div className={`${i === 0 ? 'animate-ping' : ''} absolute inline-flex h-full w-full rounded-full ${i === 0 ? 'bg-indigo-500/40' : 'bg-zinc-500/40'} opacity-75`}></div>
