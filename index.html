@@ -10,6 +10,36 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+@keyframes floatOrb1 {
+  0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+  33%       { transform: translateY(-20px) translateX(10px) scale(1.1); }
+  66%       { transform: translateY(10px) translateX(-10px) scale(0.95); }
+}
+@keyframes floatOrb2 {
+  0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+  33%       { transform: translateY(15px) translateX(-15px) scale(0.9); }
+  66%       { transform: translateY(-10px) translateX(8px) scale(1.05); }
+}
+
+@keyframes floatOrb1 {
+  0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+  33%       { transform: translateY(-20px) translateX(10px) scale(1.1); }
+  66%       { transform: translateY(10px) translateX(-10px) scale(0.95); }
+}
+@keyframes floatOrb2 {
+  0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+  33%       { transform: translateY(15px) translateX(-15px) scale(0.9); }
+  66%       { transform: translateY(-10px) translateX(8px) scale(1.05); }
+}
+@keyframes rippleAnim {
+  to { transform: scale(1); opacity: 0; }
+}
+@keyframes gridMove {
+  0%   { background-position: 0px 0px; }
+  100% { background-position: 30px 30px; }
+}
+
+
 
 @keyframes scanLine {
   0%   { top: -2px; opacity: 0; }
