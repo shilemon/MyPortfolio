@@ -154,7 +154,7 @@ export const EXPERIENCES: Experience[] = [
 
     {
     company: 'Spectrum Software & Consulting Ltd. (SSCL)',
-    role: 'DevOps Engineer Intern',
+    role: 'DevOps Engineer',
     period: 'Apr. 2026 – Present',
     logo: SSCLLogo,
     description: [

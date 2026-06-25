@@ -72,31 +72,63 @@ function useTypewriter(text: string, speed = 28, delay = 800) {
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [eduLogoError, setEduLogoError] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const hireMeRef = useMagnetic(0.4);
 
-  const bioText = "DevOps Engineer with 2+ years of experience in AWS, CI/CD, Docker,kubernetes and Linux. I enjoy automating infrastructure, improving deployment workflows, and building reliable cloud systems. Open to remote opportunities.";
+  // ── Refs for scroll-driven DOM updates (no re-renders) ──
+  const progressBarRef  = useRef<HTMLDivElement>(null);
+  const heroBlobRef     = useRef<HTMLDivElement>(null);
+  const profileRef      = useRef<HTMLDivElement>(null);
+  const skillsSectionRef = useRef<HTMLElement>(null);
+
+  const bioText = "DevOps Engineer with 2+ years of experience in AWS, CI/CD, Docker, Kubernetes and Linux. I enjoy automating infrastructure, improving deployment workflows, and building reliable cloud systems. Open to remote opportunities.";
   const { displayed: typedBio, done: bioTyped } = useTypewriter(bioText, 22, 1200);
 
+  // ── Single scroll listener — direct DOM manipulation, no setState ──
   useEffect(() => {
-    const handleScroll = () => {
-      const sy = window.scrollY;
-      const total = document.body.scrollHeight - window.innerHeight;
-      setScrollY(sy);
-      setScrollProgress(total > 0 ? (sy / total) * 100 : 0);
-      const sections = ['home', 'skills', 'projects', 'experience', 'contact'];
-      const scrollPos = sy + 100;
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element && scrollPos >= element.offsetTop && scrollPos < element.offsetTop + element.offsetHeight) {
-          setActiveSection(section);
-          break;
+    let rafId: number;
+
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const sy    = window.scrollY;
+        const total = document.body.scrollHeight - window.innerHeight;
+
+        // Progress bar
+        if (progressBarRef.current) {
+          progressBarRef.current.style.width = `${total > 0 ? (sy / total) * 100 : 0}%`;
         }
-      }
+        // Hero blob parallax
+        if (heroBlobRef.current) {
+          heroBlobRef.current.style.transform = `translateY(${sy * 0.18}px)`;
+        }
+        // Profile image counter-parallax
+        if (profileRef.current) {
+          profileRef.current.style.transform = `translateY(${sy * -0.06}px)`;
+        }
+        // Skills section subtle float
+        if (skillsSectionRef.current) {
+          const offset = Math.max(0, sy - 600) * 0.04;
+          skillsSectionRef.current.style.transform = `translateY(${offset}px)`;
+        }
+
+        // Active section — setState only when section actually changes
+        const sections = ['home', 'skills', 'projects', 'experience', 'contact'];
+        const scrollPos = sy + 100;
+        for (const section of sections) {
+          const el = document.getElementById(section);
+          if (el && scrollPos >= el.offsetTop && scrollPos < el.offsetTop + el.offsetHeight) {
+            setActiveSection(prev => (prev !== section ? section : prev));
+            break;
+          }
+        }
+      });
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const backgroundLogos = [
@@ -126,17 +158,17 @@ const App: React.FC = () => {
   };
 
   const handleRipple = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const btn = e.currentTarget;
+    const btn  = e.currentTarget;
     const rect = btn.getBoundingClientRect();
-    const ripple = document.createElement('span');
     const size = Math.max(rect.width, rect.height) * 2;
+    const ripple = document.createElement('span');
     ripple.style.cssText = `
-      position:absolute; border-radius:50%; pointer-events:none;
-      width:${size}px; height:${size}px;
+      position:absolute;border-radius:50%;pointer-events:none;
+      width:${size}px;height:${size}px;
       left:${e.clientX - rect.left - size / 2}px;
       top:${e.clientY - rect.top - size / 2}px;
       background:rgba(255,255,255,0.3);
-      transform:scale(0); animation:rippleAnim 0.6s ease-out forwards;
+      transform:scale(0);animation:rippleAnim 0.6s ease-out forwards;
     `;
     btn.style.position = 'relative';
     btn.style.overflow = 'hidden';
@@ -178,10 +210,11 @@ const App: React.FC = () => {
 
       {/* ── NAVIGATION ── */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-zinc-950/60 backdrop-blur-xl border-b border-zinc-800/50">
-        {/* Scroll Progress Bar */}
+        {/* Scroll Progress Bar — driven by ref, zero re-renders */}
         <div
-          className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-indigo-500 via-blue-400 to-cyan-400 transition-all duration-100 shadow-[0_0_8px_rgba(99,102,241,0.8)]"
-          style={{ width: `${scrollProgress}%` }}
+          ref={progressBarRef}
+          className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-indigo-500 via-blue-400 to-cyan-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]"
+          style={{ width: '0%' }}
         />
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -224,7 +257,9 @@ const App: React.FC = () => {
 
         {/* ── HERO ── */}
         <section id="home" className="min-h-[90vh] flex flex-col justify-center py-20 relative">
-          <div className="absolute inset-0 pointer-events-none" style={{ transform: `translateY(${scrollY * 0.18}px)` }}>
+
+          {/* Parallax blobs — driven by ref */}
+          <div ref={heroBlobRef} className="absolute inset-0 pointer-events-none">
             <div className="absolute top-20 left-0 w-96 h-96 bg-indigo-600/5 blur-[140px] rounded-full"></div>
             <div className="absolute bottom-0 right-0 w-80 h-80 bg-blue-600/5 blur-[120px] rounded-full"></div>
           </div>
@@ -285,10 +320,10 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Profile Frame — 3D mouse parallax */}
+            {/* Profile Frame — ref-driven parallax + 3D mouse tilt */}
             <div
+              ref={profileRef}
               className="relative group animate-in fade-in zoom-in duration-1000 delay-200"
-              style={{ transform: `translateY(${scrollY * -0.06}px)` }}
               onMouseMove={(e) => {
                 const el = e.currentTarget;
                 const rect = el.getBoundingClientRect();
@@ -298,7 +333,7 @@ const App: React.FC = () => {
                 el.style.transition = 'transform 0.1s ease';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+                e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
                 e.currentTarget.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
               }}
             >
@@ -322,8 +357,10 @@ const App: React.FC = () => {
         </section>
 
         {/* ── SKILLS ── */}
-        <section id="skills" className="py-32 border-t border-zinc-900/50"
-          style={{ transform: `translateY(${Math.max(0, scrollY - 600) * 0.04}px)` }}
+        <section
+          ref={skillsSectionRef}
+          id="skills"
+          className="py-32 border-t border-zinc-900/50"
         >
           <ScrollReveal direction="up">
             <div className="text-center mb-24 space-y-6">
@@ -592,7 +629,6 @@ const App: React.FC = () => {
                   Currently looking for new opportunities in Platform Engineering and Cloud Infrastructure. Let's build something scalable.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-8">
-                  {/* Ripple Contact button */}
                   <a
                     href={`mailto:${EMAIL}`}
                     onClick={handleRipple}
@@ -613,7 +649,7 @@ const App: React.FC = () => {
 
       {/* ── FOOTER ── */}
       <footer className="py-32 border-t border-zinc-900/50 relative z-10 overflow-hidden">
-        {/* Animated dot grid background */}
+        {/* Animated dot grid */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage: 'radial-gradient(circle, rgba(99,102,241,0.8) 1px, transparent 1px)',
@@ -638,7 +674,7 @@ const App: React.FC = () => {
               onMouseLeave={(e) => {
                 e.currentTarget.style.textShadow = 'none';
                 e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.transition = 'transform 0.5s ease, text-shadow 0.5s ease';
+                e.currentTarget.style.transition = 'transform 0.5s ease';
               }}
             >
               EMON SHIL.
