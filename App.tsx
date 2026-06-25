@@ -80,7 +80,7 @@ const App: React.FC = () => {
   const profileRef      = useRef<HTMLDivElement>(null);
   const skillsSectionRef = useRef<HTMLElement>(null);
 
-  const bioText = "DevOps Engineer with 2+ years of experience in AWS, CI/CD, Docker, Kubernetes and Linux. I enjoy automating infrastructure, improving deployment workflows, and building reliable cloud systems. Open to remote opportunities.";
+  const bioText = "DevOps Engineer with 2+ years of experience in AWS, CI/CD, Docker, Kubernetes and Linux. I enjoy automating infrastructure, improving deployment workflows, and building reliable cloud systems. Open To New Opportunities.";
   const { displayed: typedBio, done: bioTyped } = useTypewriter(bioText, 22, 1200);
 
   // ── Single scroll listener — direct DOM manipulation, no setState ──
